@@ -1,24 +1,46 @@
-# Shoes Product API
+# Counter Press Backend
 
-This repository for Shoes Product API service. Shoes Product API is a back end service that can be used for get shoes product data based on **Typescript** and **PstgreSQL** technologies with **Hono** and **Prisma** as a frame work. The Shoes Product API contains several features that can be used by users. Here are some of the features in this Shoes Product API service.
+## REST API Specification
 
-## Features
+- Production: `https://amazingsafari-backend.haidar.dev`
+- Local: `http://localhost:3000`
 
-- **Get** Get all data from products and brand database.
-- **Post** Create new item for product and brand to database.
-- **Put** Update product or brand item to database.
-- **Delete** Remove product or brand item from database.
+Products:
 
-## Table Relation (ERD)
+| Endpoint        | HTTP     | Description          |
+| --------------- | -------- | -------------------- |
+| `/products`     | `GET`    | Get all products     |
+| `/products/:id` | `GET`    | Get product by id    |
+| `/products`     | `POST`   | Add new product      |
+| `/products`     | `DELETE` | Delete all products  |
+| `/products/:id` | `DELETE` | Delete product by id |
+| `/products/:id` | `PUT`    | Update product by id |
 
-![Table Relation](/table_relation.png)
+Auth:
 
-## URL
+| Endpoint           | HTTP     | Permission    |
+| ------------------ | -------- | ------------- |
+| `/users`           | `GET`    | Public        |
+| `/users/:username` | `GET`    | Public        |
+| `/auth/register`   | `POST`   | Public        |
+| `/auth/login`      | `POST`   | Public        |
+| `/auth/me`         | `GET`    | Authenticated |
+| `/auth/logout`     | `POST`   | Authenticated |
+| `/cart`            | `GET`    | Authenticated |
+| `/cart/items`      | `POST`   | Authenticated |
+| `/cart/items/:id`  | `DELETE` | Authenticated |
+| `/cart/items/:id`  | `PUT`    | Authenticated |
 
-You can access the website here:
-[https://api-shoes-product.onrender.com/api](https://api-shoes-product.onrender.com/api)
+## Getting Started
 
-## Development
+Setup database:
+
+```sh
+docker compose up -d
+
+# or database only
+docker compose -f docker-compose.dev.yaml up -d
+```
 
 To install dependencies:
 
@@ -29,7 +51,18 @@ bun install
 To run:
 
 ```sh
-bun run dev
+bun dev
 ```
 
-open http://localhost:80
+Open <http://localhost:3000>
+
+## Prisma Setup
+
+warn You already have a .gitignore file. Don't forget to add `.env` in it to not commit any private information.
+
+Next steps:
+
+1. Set the `DATABASE_URL` in the `.env` file to point to your existing database. If your database has no tables yet, read <https://pris.ly/d/getting-started>
+2. Set the provider of the datasource block in schema.prisma to match your database: postgresql, mysql, sqlite, sqlserver, mongodb or cockroachdb.
+3. Run prisma db pull to turn your database schema into a Prisma schema.
+4. Run prisma generate to generate the Prisma Client. You can then start querying your database.
