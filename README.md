@@ -2,7 +2,7 @@
 
 ## REST API Specification
 
-- Production: `https://amazingsafari-backend.haidar.dev`
+- Production: `To Be Confirmed`
 - Local: `http://localhost:3000`
 
 Products:
