@@ -2,7 +2,7 @@
 
 ## REST API Specification
 
-- Production: `To Be Confirmed`
+- Production: `https://counter-press-backend.onrender.com/api`
 - Local: `http://localhost:3000`
 
 Products:
