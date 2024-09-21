@@ -1,0 +1,35 @@
+services:
+  database:
+    image: postgres
+    ports:
+      - "${DATABASE_PORT}:5432"
+    env_file:
+      - path: .env
+        required: true
+    volumes:
+      - api-shoes-product:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${DATABASE_NAME} -U ${DATABSE_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: api-shoes-product
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_PORT}:80"
+    depends_on:
+      database:
+        condition: service_healthy
+    develop:
+      watch:
+        - path: ./src
+          action: sync
+          target: /usr/local/app/src
+        - path: ./src/package.json
+          action: rebuild
+volumes:
+  api-shoes-product:
