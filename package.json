@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
-    "start:migrate:production": "bunx prisma migrate deploy && bun run src/index.ts"
+    "start:migrate:production": "bun prisma migrate deploy && bun run src/index.ts"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.4.1",
