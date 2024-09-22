@@ -1,13 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 
-import {
-  MESSAGE,
-  ROUTES,
-  TAGS,
-  HEADER_TYPE,
-  CONTENT_TYPE as CONTENT_TYPE_HEADER,
-  SORT_BY,
-} from "../constants";
+import { MESSAGE, ROUTES, TAGS } from "../constants";
 import {
   addBrands,
   deleteBrandById,
@@ -23,10 +16,6 @@ import {
 } from "../schemas/Brand.schema";
 
 const brand = new OpenAPIHono();
-
-const { CONTENT_TYPE } = HEADER_TYPE;
-const { APPLICATION_JSON } = CONTENT_TYPE_HEADER;
-const { ID } = SORT_BY;
 
 /**
  * GET Brands
@@ -49,7 +38,7 @@ brand.openapi(
   async (c) => {
     try {
       const query = c.req.query();
-      const brands = getBrands(query);
+      const brands = await getBrands(query);
 
       return c.json(
         {
@@ -172,7 +161,7 @@ brand.openapi(
   async (c) => {
     const { id } = c.req.valid("param");
 
-    if (!id) return c.json({ status: false, message: "ID is required" }, 404);
+    if (!id) return c.json({ status: false, message: "ID is not found" }, 404);
 
     const deletedBrand = await deleteBrandById(id);
 
@@ -213,7 +202,7 @@ brand.openapi(
     const id = c.req.param("id");
     const body = c.req.valid("json");
 
-    if (!id) return c.json({ status: false, message: "ID is required" }, 404);
+    if (!id) return c.json({ status: false, message: "ID is not found" }, 404);
 
     const { name } = body;
     const updateBrand = await updateBrandById({ id, name });

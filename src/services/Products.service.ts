@@ -44,9 +44,12 @@ export async function getProductById(id: string) {
 }
 
 export async function addProduct(
-  data: Pick<Product, "name" | "price" | "image" | "brandId" | "stock">
+  data: Pick<
+    Product,
+    "name" | "price" | "image" | "brandId" | "stock" | "brandName"
+  >
 ) {
-  const { name, price, brandId, image, stock } = data;
+  const { name, price, brandId, image, stock, brandName } = data;
 
   const newProduct = await prisma.product.create({
     data: {
@@ -54,6 +57,7 @@ export async function addProduct(
       price,
       image,
       brandId,
+      brandName,
       stock,
       slug: formatSlug(name),
     },
@@ -76,7 +80,7 @@ export async function updateProductById(
   id: string,
   data: z.infer<typeof bodyUpdateProductSchema>
 ) {
-  const { name, image, price, stock, brandId } = data;
+  const { name, image, price, stock, brandId, brandName } = data;
 
   const updatedProduct = await prisma.product.update({
     where: {
@@ -88,6 +92,7 @@ export async function updateProductById(
       image,
       stock,
       brandId,
+      brandName,
     },
   });
 

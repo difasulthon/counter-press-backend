@@ -1,13 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 
-import {
-  ROUTES,
-  MESSAGE,
-  TAGS,
-  HEADER_TYPE,
-  CONTENT_TYPE as CONTENT_TYPE_HEADER,
-  SORT_BY,
-} from "../constants";
+import { ROUTES, MESSAGE, TAGS } from "../constants";
 import {
   addProduct,
   deleteProductById,
@@ -23,10 +16,6 @@ import {
 } from "../schemas/Product.schema";
 
 const product = new OpenAPIHono();
-
-const { CONTENT_TYPE } = HEADER_TYPE;
-const { APPLICATION_JSON } = CONTENT_TYPE_HEADER;
-const { ID } = SORT_BY;
 
 /**
  * GET Products
@@ -94,6 +83,9 @@ product.openapi(
   },
   async (c) => {
     const { id } = c.req.valid("param");
+
+    if (!id) return c.json({ status: false, message: "ID is not found" }, 404);
+
     const product = await getProductById(id);
 
     return c.json(
@@ -134,8 +126,15 @@ product.openapi(
   async (c) => {
     let body = c.req.valid("json");
 
-    const { name, price, image, brandId, stock } = body;
-    const newProduct = await addProduct({ name, price, image, brandId, stock });
+    const { name, price, image, brandId, stock, brandName } = body;
+    const newProduct = await addProduct({
+      name,
+      price,
+      image,
+      brandId,
+      stock,
+      brandName,
+    });
 
     return c.json(
       {
@@ -168,6 +167,9 @@ product.openapi(
   },
   async (c) => {
     const { id } = c.req.valid("param");
+
+    if (!id) return c.json({ status: false, message: "ID is not found" }, 404);
+
     const deletedProduct = await deleteProductById(id);
 
     return c.json({
@@ -204,16 +206,20 @@ product.openapi(
     tags: TAGS.PRODUCTS,
   },
   async (c) => {
-    const { id } = c.req.valid("param");
+    const id = c.req.param("id");
     let body = c.req.valid("json");
+    console.log("id", id);
 
-    const { price, name, stock, brandId, image } = body;
+    if (!id) return c.json({ status: false, message: "ID is not found" }, 404);
+
+    const { price, name, stock, image, brandId, brandName } = body;
     const newData = {
       price,
       name,
       stock,
-      brandId,
       image,
+      brandId,
+      brandName,
     };
     const updatedProduct = await updateProductById(id, newData);
 

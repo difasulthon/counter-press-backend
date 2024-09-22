@@ -22,12 +22,14 @@ export const bodyAddProductSchema = z.object({
   price: z.number().min(1),
   image: z.string().min(4),
   stock: z.number().min(1),
+  brandName: z.string().min(1),
 });
 
 export const bodyUpdateProductSchema = z.object({
   name: z.string().optional(),
-  brandId: z.string().optional(),
   price: z.number().optional(),
   image: z.string().optional(),
   stock: z.number().optional(),
+  brandId: z.string().optional(),
+  brandName: z.string().optional(),
 });
