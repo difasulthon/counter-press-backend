@@ -2,7 +2,7 @@
 
 ## REST API Specification
 
-- Production: `https://counter-press-backend.onrender.com/api`
+- Production: <https://www.counter-press-backend.difasulthon.com/api>
 - Local: `http://localhost:3000`
 
 Products:
