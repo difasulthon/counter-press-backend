@@ -1,4 +1,4 @@
-const Products = [
+export const dataProducts = [
   {
     slug: "SPECS-ACCELERATOR-ALPHAFORM-CORE-FG-SILVER-SAFETY-YELLOW-KINGFISHER",
     name: "SPECS ACCELERATOR ALPHAFORM CORE FG SILVER SAFETY YELLOW KINGFISHER",
@@ -9,5 +9,3 @@ const Products = [
     brandName: "Specs",
   },
 ];
-
-export default Products;

@@ -3,7 +3,11 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
-    "start:migrate:production": "bun prisma migrate deploy && bun run src/index.ts"
+    "start:migrate:production": "bun prisma migrate deploy && bun run src/index.ts",
+    "db:seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@hono/swagger-ui": "^0.4.1",
@@ -17,6 +21,7 @@
     "@types/node": "^22.5.1",
     "prisma": "^5.19.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.1",
     "typescript": "^5.5.4"
   }
 }

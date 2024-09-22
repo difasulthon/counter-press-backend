@@ -39,6 +39,7 @@ model Product {
   updatedAt DateTime @updatedAt
 
   brandId   String?
+  brandName String?
   brand     Brand?   @relation(fields: [brandId], references: [id])
 
   @@map("products")
