@@ -1,41 +1,33 @@
-import { z } from 'zod'
+import { z } from "zod";
 
-import {SORT, SORT_BY} from '../constants'
+import { SORT, SORT_BY } from "../constants";
 
-const {DESC, ASC} = SORT;
-const {
-  ID,
-  NAME,
-  BRAND_ID,
-  CREATED_AT,
-  UPDATED_AT
-} = SORT_BY
-
-const sortList = [DESC, ASC]
-const sortByList = [ID, NAME, BRAND_ID, CREATED_AT, UPDATED_AT]
+const { DESC, ASC } = SORT;
+const { ID, NAME, BRAND_ID, CREATED_AT, UPDATED_AT } = SORT_BY;
 
 export const queryProductSchema = z.object({
   name: z.string().optional(),
-  brand_id: z.string().optional(),
-  sort: z.enum(sortList).optional(),
-  sort_by: z.enum(sortByList).optional()
+  brandId: z.string().optional(),
+  sort: z.enum([DESC, ASC]).optional(),
+  sortBy: z.enum([ID, NAME, BRAND_ID, CREATED_AT, UPDATED_AT]).optional(),
 });
 
 export const paramProductByIdSchema = z.object({
-  id: z.string().min(1)
-})
+  id: z.string().min(1),
+});
 
 export const bodyAddProductSchema = z.object({
   name: z.string().min(3),
-  brand_id: z.string().min(1),
-  price: z.string().min(1),
-  image: z.string().min(4)
-})
+  brandId: z.string().min(1),
+  price: z.number().min(1),
+  image: z.string().min(4),
+  stock: z.number().min(1),
+});
 
 export const bodyUpdateProductSchema = z.object({
   name: z.string().optional(),
-  brand_id: z.string().optional(),
-  price: z.string().optional(),
+  brandId: z.string().optional(),
+  price: z.number().optional(),
   image: z.string().optional(),
-  available_stock: z.string().optional()
-})
+  stock: z.number().optional(),
+});

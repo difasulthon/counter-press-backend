@@ -1,12 +1,8 @@
-import { Brand } from "@prisma/client"
-
-const Brands: Brand[] = [
+const Brands = [
   {
-    id: 1,
-    name: "Specs",
-    createdAt: "2024-09-08T14:15:37.270Z",
-    updatedAt: "2024-09-08T14:15:37.270Z"
-  }
-]
+    slug: "specs",
+    name: "SPECS",
+  },
+];
 
-export default Brands
+export default Brands;

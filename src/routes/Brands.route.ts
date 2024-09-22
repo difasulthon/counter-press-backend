@@ -1,219 +1,229 @@
-import { Hono } from "hono";
 import { OpenAPIHono } from "@hono/zod-openapi";
 
-import { Brand, Brands } from "@prisma/client";
-
-import { 
-  MESSAGE, ROUTES, TAGS, HEADER_TYPE, CONTENT_TYPE as CONTENT_TYPE_HEADER, SORT_BY 
+import {
+  MESSAGE,
+  ROUTES,
+  TAGS,
+  HEADER_TYPE,
+  CONTENT_TYPE as CONTENT_TYPE_HEADER,
+  SORT_BY,
 } from "../constants";
-import { 
-  addBrands, deleteBrandById, getBrandById, getBrands, updateBrandById 
+import {
+  addBrands,
+  deleteBrandById,
+  getBrandById,
+  getBrands,
+  updateBrandById,
 } from "../services/Brands.service";
-import { 
-  bodyAddBrandSchema, bodyUpdateBrandSchema, paramBrandByIdSchema, queryBrandSchema
+import {
+  bodyAddBrandSchema,
+  bodyUpdateBrandSchema,
+  paramBrandByIdSchema,
+  queryBrandSchema,
 } from "../schemas/Brand.schema";
 
-const brand = new OpenAPIHono()
+const brand = new OpenAPIHono();
 
-const {CONTENT_TYPE} = HEADER_TYPE
-const {APPLICATION_JSON} = CONTENT_TYPE_HEADER
-const {ID} = SORT_BY
+const { CONTENT_TYPE } = HEADER_TYPE;
+const { APPLICATION_JSON } = CONTENT_TYPE_HEADER;
+const { ID } = SORT_BY;
 
 /**
  * GET Brands
  */
-brand
-  .openapi(
-    {
-      method: 'get',
-      path: ROUTES.BRANDS,
-      description: 'Get all brands',
-      request: {
-        query: queryBrandSchema,
-      },
-      responses: {
-        200: {
-          description: 'List of brands',
-        },
-      },
-      tags: TAGS.BRANDS,
+brand.openapi(
+  {
+    method: "get",
+    path: ROUTES.BRANDS,
+    description: "Get all brands",
+    request: {
+      query: queryBrandSchema,
     },
-    async (c) => {
-      try {
-        const query = c.req.query();
-        const brands = await getBrands(query);
-    
-        return c.json({
+    responses: {
+      200: {
+        description: "List of brands",
+      },
+    },
+    tags: TAGS.BRANDS,
+  },
+  async (c) => {
+    try {
+      const query = c.req.query();
+      const brands = getBrands(query);
+
+      return c.json(
+        {
           status: true,
           message: MESSAGE.SUCCESS.GET_BRANDS,
-          data: brands
-        }, 200)
-      } catch (e) {
-        return c.json({
+          data: brands,
+        },
+        200
+      );
+    } catch (e) {
+      return c.json(
+        {
           status: false,
           message: e,
-        }, 404)
-      }
+        },
+        404
+      );
     }
-  )
+  }
+);
 
 /**
  * GET Brand By ID
  */
-brand
-  .openapi(
-    {
-      method: 'get',
-      path: ROUTES.BRAND,
-      description: 'Get brand by Id',
-      request: {
-        params: paramBrandByIdSchema,
-      },
-      responses: {
-        200: {
-          description: 'Brand item',
-        },
-        404: {
-          description: 'Brand not found',
-        },
-      },
-      tags: TAGS.BRANDS,
+brand.openapi(
+  {
+    method: "get",
+    path: ROUTES.BRAND,
+    description: "Get brand by Id",
+    request: {
+      params: paramBrandByIdSchema,
     },
-    async (c) => {
-      const id = c.req.param(ID)
-      const brand = await getBrandById(id)
-    
-      return c.json({
+    responses: {
+      200: {
+        description: "Brand item",
+      },
+      404: {
+        description: "Brand not found",
+      },
+    },
+    tags: TAGS.BRANDS,
+  },
+  async (c) => {
+    const { id } = c.req.valid("param");
+
+    if (!id) return c.json({ status: false, message: "ID not found" }, 404);
+
+    const brand = getBrandById(id);
+
+    return c.json(
+      {
         status: true,
         message: MESSAGE.SUCCESS.GET_BRAND,
-        data: brand
-      }, 200)
-    }
-  )
+        data: brand,
+      },
+      200
+    );
+  }
+);
 
 /**
  * POST Add New Brand
  */
-brand
-  .openapi(
-    {
-      method: 'post',
-      path: ROUTES.BRANDS,
-      description: 'Add brand',
-      request: {
-        body: {
-          content: {
-            'application/json': {
-              schema: bodyAddBrandSchema
-            },
-          }
-        }
+brand.openapi(
+  {
+    method: "post",
+    path: ROUTES.BRANDS,
+    description: "Add brand",
+    request: {
+      body: {
+        content: {
+          "application/json": {
+            schema: bodyAddBrandSchema,
+          },
+        },
       },
-      responses: {
-        201: {
-          description: 'Add new brand',
-        }
-      },
-      tags: TAGS.BRANDS,
     },
-    async (c) => {
-      let body: Partial<Brands>
-      const contentType = c.req.header(CONTENT_TYPE)
-    
-      if (contentType === APPLICATION_JSON) {
-        body = await c.req.json()
-      } else {
-        body = await c.req.parseBody<Partial<Brands>>()
-      }
-    
-      const {name} = body
-      const newBrand = await addBrands({name})
-    
-      return c.json({
+    responses: {
+      201: {
+        description: "Add new brand",
+      },
+    },
+    tags: TAGS.BRANDS,
+  },
+  async (c) => {
+    const body = c.req.valid("json");
+
+    const { name } = body;
+    const newBrand = await addBrands({ name });
+
+    return c.json(
+      {
         status: true,
         message: MESSAGE.SUCCESS.ADD_BRAND,
-        data: newBrand
-      }, 201)
-    }
-  )
+        data: newBrand,
+      },
+      201
+    );
+  }
+);
 
 /**
  * DELETE Brand
  */
-brand
-  .openapi(
-    {
-      method: 'delete',
-      path: ROUTES.BRAND,
-      description: 'Delete brand',
-      request: {
-       params: paramBrandByIdSchema
-      },
-      responses: {
-        200: {
-          description: 'Delete brand',
-        }
-      },
-      tags: TAGS.BRANDS,
+brand.openapi(
+  {
+    method: "delete",
+    path: ROUTES.BRAND,
+    description: "Delete brand",
+    request: {
+      params: paramBrandByIdSchema,
     },
-    async (c) => {
-      const {id} = c.req.param()
-      const deletedBrand = await deleteBrandById(id)
-    
-      return c.json({
-        status: true,
-        message: MESSAGE.SUCCESS.DELETED_PRODUCT,
-        data: deletedBrand
-      })
-    }
-  )
+    responses: {
+      200: {
+        description: "Delete brand",
+      },
+    },
+    tags: TAGS.BRANDS,
+  },
+  async (c) => {
+    const { id } = c.req.valid("param");
+
+    if (!id) return c.json({ status: false, message: "ID is required" }, 404);
+
+    const deletedBrand = await deleteBrandById(id);
+
+    return c.json({
+      status: true,
+      message: MESSAGE.SUCCESS.DELETED_PRODUCT,
+      data: deletedBrand,
+    });
+  }
+);
 
 /**
  * PUT Update Brand
  */
-brand
-  .openapi(
-    {
-      method: 'put',
-      path: ROUTES.BRAND,
-      description: 'Update brand',
-      request: {
-       params: paramBrandByIdSchema,
-       body: {
+brand.openapi(
+  {
+    method: "put",
+    path: ROUTES.BRAND,
+    description: "Update brand",
+    request: {
+      params: paramBrandByIdSchema,
+      body: {
         content: {
-          'application/json': {
-            schema: bodyUpdateBrandSchema
-          }
-        }
-       }
+          "application/json": {
+            schema: bodyUpdateBrandSchema,
+          },
+        },
       },
-      responses: {
-        200: {
-          description: 'Update brand',
-        }
-      },
-      tags: TAGS.BRANDS,
     },
-    async (c) => {
-      const id = c.req.param(ID)
-      let body: Partial<Brand>
-      const contentType = c.req.header(CONTENT_TYPE)
-    
-      if (contentType === APPLICATION_JSON) {
-        body = await c.req.json()
-      } else {
-        body = await c.req.parseBody<Partial<Brand>>()
-      }
-    
-      const {name} = body
-      const updateBrand = await updateBrandById({id, name})
-    
-      return c.json({
-        status: true,
-        message: MESSAGE.SUCCESS.UPDATED_BRAND,
-        data: updateBrand
-      })
-    }
-  )
+    responses: {
+      200: {
+        description: "Update brand",
+      },
+    },
+    tags: TAGS.BRANDS,
+  },
+  async (c) => {
+    const id = c.req.param("id");
+    const body = c.req.valid("json");
+
+    if (!id) return c.json({ status: false, message: "ID is required" }, 404);
+
+    const { name } = body;
+    const updateBrand = await updateBrandById({ id, name });
+
+    return c.json({
+      status: true,
+      message: MESSAGE.SUCCESS.UPDATED_BRAND,
+      data: updateBrand,
+    });
+  }
+);
 
 export { brand };

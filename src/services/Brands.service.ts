@@ -1,78 +1,78 @@
 import { PrismaClient, Brand } from "@prisma/client";
+import { z } from "zod";
 
-import { brandSchema } from "../schemas/Brand.schema";
+import { queryBrandSchema } from "../schemas/Brand.schema";
 import { SORT, SORT_BY } from "../constants";
+import { formatSlug } from "../utils/formatter";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
-const {ID} = SORT_BY
+const { ID } = SORT_BY;
 
-export async function getBrands(query: typeof brandSchema): Brand[] {
-  const {name, sort_by, sort} = query
+export async function getBrands(query: z.infer<typeof queryBrandSchema>) {
+  const { name, sortBy, sort } = query;
 
-  const sortBy = sort_by || ID
-  const sortMethod = sort || SORT.ASC
-  const orderBy = { [sortBy]: sortMethod }
+  const sortByKey = sortBy || ID;
+  const sortMethod = sort || SORT.ASC;
+  const orderBy = { [sortByKey]: sortMethod };
 
   const brands = await prisma.brand.findMany({
     where: {
       name: {
-        contains: name || '',
-        mode: 'insensitive'
-      }
+        contains: name,
+        mode: "insensitive",
+      },
     },
-    orderBy
-  })
+    orderBy,
+  });
 
   return brands;
 }
 
-export async function getBrandById(id: string): Brand {
+export async function getBrandById(id: string) {
   const brand = await prisma.brand.findFirst({
     where: {
-      id: +id
-    }
-  })
+      id,
+    },
+  });
 
-  return brand
+  return brand;
 }
 
-export async function addBrands(data: Partial<Brand>) {
-  const {name} = data;
+export async function addBrands(data: Pick<Brand, "name">) {
+  const { name } = data;
 
   const newBrand = prisma.brand.create({
     data: {
-      name
-    }
-  })
+      name,
+      slug: formatSlug(name),
+    },
+  });
 
-  return newBrand
+  return newBrand;
 }
 
 export async function deleteBrandById(id: string) {
   const deletedBrand = await prisma.brand.delete({
     where: {
-      id: +id
-    }
-  })
+      id,
+    },
+  });
 
-  return deletedBrand
+  return deletedBrand;
 }
 
 export async function updateBrandById(data: Partial<Brand>) {
-  const {
-    id,
-    name,
-  } = data
+  const { id, name } = data;
 
   const updatedBrand = await prisma.brand.update({
     where: {
-      id: +id
+      id,
     },
     data: {
-      name: name || undefined,
-    }
-  })
+      name,
+    },
+  });
 
-  return updatedBrand
+  return updatedBrand;
 }
