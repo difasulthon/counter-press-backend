@@ -1,91 +1,83 @@
-import { PrismaClient, Product } from '@prisma/client'
+import { z } from "zod";
+import { PrismaClient, Product } from "@prisma/client";
 
-import { SORT, SORT_BY } from '../constants';
-import { productSchema } from '../schemas/Product.schema';
+// import { SORT, SORT_BY } from "../constants";
+import { queryProductSchema } from "../schemas/Product.schema";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
-const {ID} = SORT_BY
+// const { ID } = SORT_BY;
 
-export async function getProducts(query: typeof productSchema): Product[] {
-  const {name, brand_id, sort, sort_by} = query
+export async function getProducts(query: z.infer<typeof queryProductSchema>) {
+  const { name, brandId, sort } = query;
 
-  const sortBy = sort_by || ID
-  const sortMethod = sort || SORT.ASC
-  const orderBy = { [sortBy]: sortMethod }
+  // const sortBy = sortBy || ID;
+  // const sortMethod = sort || SORT.ASC;
+  // const orderBy = { [sortBy]: sortMethod };
 
   const products = await prisma.product.findMany({
     where: {
       name: {
-        contains: name || '',
-        mode: 'insensitive'
+        contains: name || "",
+        mode: "insensitive",
       },
-      brand_id: brand_id ? +brand_id : undefined,
+      brandId,
     },
-    orderBy
-  })
+    // orderBy,
+  });
 
   return products;
 }
 
-export async function getProductById(id: string): Product {
+export async function getProductById(id: string) {
   const product = await prisma.product.findFirst({
-    where: {
-      id: +id
-    }
-  })
+    where: { id },
+  });
 
-  return product
+  return product;
 }
 
-export async function addProduct(data: Partial<Product>) {
-  const {name, price, brand_id, image} = data;
+export async function addProduct(
+  data: Omit<Product, "id" | "availableStock" | "createdAt" | "updatedAt">
+) {
+  const { name, price, image, brandId } = data;
 
   const newProduct = await prisma.product.create({
     data: {
       name,
       price: +price,
       image,
-      brand_id: +brand_id,
-      available_stock: 0
-    }
-  })
+      brandId,
+      availableStock: 0,
+    },
+  });
 
-  return newProduct
+  return newProduct;
 }
 
 export async function deleteProductById(id: string) {
   const deletedProduct = await prisma.product.delete({
     where: {
-      id: +id
-    }
-  })
+      id,
+    },
+  });
 
-  return deletedProduct
+  return deletedProduct;
 }
 
 export async function updateProductById(data: Partial<Product>) {
-  const {
-    id,
-    name,
-    image,
-    price,
-    available_stock,
-    brand_id
-  } = data
+  const { id, name, image, price, availableStock, brandId } = data;
 
   const updatedProduct = await prisma.product.update({
-    where: {
-      id: +id
-    },
+    where: { id },
     data: {
-      name: name || undefined,
-      price: price ? +price : undefined,
-      image: image || undefined,
-      available_stock: available_stock ? +available_stock : undefined,
-      brand_id: brand_id ? +brand_id : undefined
-    }
-  })
+      name,
+      price,
+      image,
+      availableStock,
+      brandId,
+    },
+  });
 
-  return updatedProduct
+  return updatedProduct;
 }

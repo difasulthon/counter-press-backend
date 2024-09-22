@@ -14,25 +14,32 @@ datasource db {
 }
 
 model Brand {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(128)
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id String @id @default(cuid())
+
+  slug     String    @unique @db.VarChar(128)
+  name     String    @db.VarChar(128)
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("brands")
 }
 
 model Product {
-  id              Int      @id @default(autoincrement())
-  name            String   @db.VarChar(128)
-  price           Int      @db.Integer
-  image           String   @db.Text
-  available_stock Int      @db.Integer
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  brand_id        Int?
-  Brand           Brand?   @relation(fields: [brand_id], references: [id])
+  id String @id @default(cuid())
+
+  slug           String @unique @db.VarChar(128)
+  name           String @db.VarChar(128)
+  price          Int    @db.Integer
+  image          String @db.Text
+  availableStock Int    @db.Integer
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  brandId String?
+  brand   Brand?  @relation(fields: [brandId], references: [id])
 
   @@map("products")
 }

@@ -3,26 +3,26 @@ import { PrismaClient, Brand } from "@prisma/client";
 import { brandSchema } from "../schemas/Brand.schema";
 import { SORT, SORT_BY } from "../constants";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
-const {ID} = SORT_BY
+const { ID } = SORT_BY;
 
 export async function getBrands(query: typeof brandSchema): Brand[] {
-  const {name, sort_by, sort} = query
+  const { name, sortBy, sort } = query;
 
-  const sortBy = sort_by || ID
-  const sortMethod = sort || SORT.ASC
-  const orderBy = { [sortBy]: sortMethod }
+  const sortBy = sortBy || ID;
+  const sortMethod = sort || SORT.ASC;
+  const orderBy = { [sortBy]: sortMethod };
 
   const brands = await prisma.brand.findMany({
     where: {
       name: {
-        contains: name || '',
-        mode: 'insensitive'
-      }
+        contains: name || "",
+        mode: "insensitive",
+      },
     },
-    orderBy
-  })
+    orderBy,
+  });
 
   return brands;
 }
@@ -30,49 +30,46 @@ export async function getBrands(query: typeof brandSchema): Brand[] {
 export async function getBrandById(id: string): Brand {
   const brand = await prisma.brand.findFirst({
     where: {
-      id: +id
-    }
-  })
+      id: +id,
+    },
+  });
 
-  return brand
+  return brand;
 }
 
 export async function addBrands(data: Partial<Brand>) {
-  const {name} = data;
+  const { name } = data;
 
   const newBrand = prisma.brand.create({
     data: {
-      name
-    }
-  })
+      name,
+    },
+  });
 
-  return newBrand
+  return newBrand;
 }
 
 export async function deleteBrandById(id: string) {
   const deletedBrand = await prisma.brand.delete({
     where: {
-      id: +id
-    }
-  })
+      id: +id,
+    },
+  });
 
-  return deletedBrand
+  return deletedBrand;
 }
 
 export async function updateBrandById(data: Partial<Brand>) {
-  const {
-    id,
-    name,
-  } = data
+  const { id, name } = data;
 
   const updatedBrand = await prisma.brand.update({
     where: {
-      id: +id
+      id: +id,
     },
     data: {
       name: name || undefined,
-    }
-  })
+    },
+  });
 
-  return updatedBrand
+  return updatedBrand;
 }
