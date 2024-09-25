@@ -8,7 +8,7 @@ import { brand } from "./routes/Brands.route";
 
 const api = new OpenAPIHono({ strict: false });
 
-api.use(ROUTES.BASE, cors());
+api.use("/*", cors());
 api.route(ROUTES.BASE, product);
 api.route(ROUTES.BASE, brand);
 api.notFound((c) => c.json({ message: MESSAGE.ERROR.NOT_FOUND }, 404));
