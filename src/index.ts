@@ -23,7 +23,4 @@ api.doc(ROUTES.DOC, {
 });
 api.get(ROUTES.BASE, swaggerUI({ url: ROUTES.DOC }));
 
-export default {
-  port: 80,
-  fetch: api.fetch,
-};
+export default api;

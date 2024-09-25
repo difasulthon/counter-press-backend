@@ -6,8 +6,6 @@ COPY . /app
 
 RUN bun install
 
-EXPOSE 80
-
 COPY prisma ./prisma/
 
 COPY . .
