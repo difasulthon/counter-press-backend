@@ -18,8 +18,10 @@ export async function getProducts(query: z.infer<typeof queryProductSchema>) {
   const sortByKey = sortBy || ID;
   const sortMethod = sort || SORT.ASC;
   const orderBy = { [sortByKey]: sortMethod };
-  const take = size && +size > 0 ? +size : 10;
-  const skip = page && size ? (+page - 1) * +take : 1;
+  const pageInput = page ? +page : 1;
+  const sizeInput = size ? +size : 10;
+  const take = sizeInput;
+  const skip = (pageInput - 1) * take;
 
   const products = await prisma.product.findMany({
     where: {
@@ -34,7 +36,22 @@ export async function getProducts(query: z.infer<typeof queryProductSchema>) {
     skip,
   });
 
-  return products;
+  const total = await prisma.product.count({
+    where: {
+      name: {
+        contains: name,
+        mode: "insensitive",
+      },
+      brandId,
+    },
+  });
+
+  return {
+    products,
+    page: pageInput,
+    size: sizeInput,
+    total,
+  };
 }
 
 export async function getProductBySlug(slug: string) {
