@@ -14,6 +14,7 @@
     "@hono/zod-openapi": "^0.16.0",
     "@prisma/client": "5.19.0",
     "hono": "^4.5.8",
+    "slugify": "^1.6.6",
     "zod": "^3.23.8"
   },
   "devDependencies": {

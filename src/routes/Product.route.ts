@@ -4,14 +4,15 @@ import { ROUTES, MESSAGE, TAGS } from "../constants";
 import {
   addProduct,
   deleteProductById,
-  getProductById,
+  getProductBySlug,
   getProducts,
-  updateProductById,
+  updateProductBySlug,
 } from "../services/Products.service";
 import {
   bodyAddProductSchema,
   bodyUpdateProductSchema,
   paramProductByIdSchema,
+  paramProductBySlugSchema,
   queryProductSchema,
 } from "../schemas/Product.schema";
 
@@ -61,15 +62,15 @@ product.openapi(
 );
 
 /**
- * GET Product By ID
+ * GET Product By Slug
  */
 product.openapi(
   {
     method: "get",
-    path: ROUTES.PRODUCT,
-    description: "Get product by Id",
+    path: "/product/{slug}",
+    description: "Get product by Slug",
     request: {
-      params: paramProductByIdSchema,
+      params: paramProductBySlugSchema,
     },
     responses: {
       200: {
@@ -82,11 +83,12 @@ product.openapi(
     tags: TAGS.PRODUCTS,
   },
   async (c) => {
-    const { id } = c.req.valid("param");
+    const { slug } = c.req.valid("param");
 
-    if (!id) return c.json({ status: false, message: "ID is not found" }, 404);
+    if (!slug)
+      return c.json({ status: false, message: "Slug is not found" }, 404);
 
-    const product = await getProductById(id);
+    const product = await getProductBySlug(slug);
 
     return c.json(
       {
@@ -181,15 +183,15 @@ product.openapi(
 );
 
 /**
- * PUT Update Product
+ * PUT Update Product By Slug
  */
 product.openapi(
   {
     method: "put",
-    path: ROUTES.PRODUCT,
-    description: "Update product",
+    path: "/product/{slug}",
+    description: "Update product by slug",
     request: {
-      params: paramProductByIdSchema,
+      params: paramProductBySlugSchema,
       body: {
         content: {
           "application/json": {
@@ -206,11 +208,11 @@ product.openapi(
     tags: TAGS.PRODUCTS,
   },
   async (c) => {
-    const id = c.req.param("id");
+    const slug = c.req.param("slug");
     let body = c.req.valid("json");
-    console.log("id", id);
 
-    if (!id) return c.json({ status: false, message: "ID is not found" }, 404);
+    if (!slug)
+      return c.json({ status: false, message: "Slug is not found" }, 404);
 
     const { price, name, stock, image, brandId, brandName } = body;
     const newData = {
@@ -221,7 +223,7 @@ product.openapi(
       brandId,
       brandName,
     };
-    const updatedProduct = await updateProductById(id, newData);
+    const updatedProduct = await updateProductBySlug(slug, newData);
 
     return c.json({
       status: true,

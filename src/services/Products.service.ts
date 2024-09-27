@@ -33,12 +33,14 @@ export async function getProducts(query: z.infer<typeof queryProductSchema>) {
   return products;
 }
 
-export async function getProductById(id: string) {
+export async function getProductBySlug(slug: string) {
+  console.log("slug", slug);
   const product = await prisma.product.findFirst({
     where: {
-      id,
+      slug,
     },
   });
+  console.log("product", product);
 
   return product;
 }
@@ -76,17 +78,20 @@ export async function deleteProductById(id: string) {
   return deletedProduct;
 }
 
-export async function updateProductById(
-  id: string,
+export async function updateProductBySlug(
+  slug: string,
   data: z.infer<typeof bodyUpdateProductSchema>
 ) {
   const { name, image, price, stock, brandId, brandName } = data;
 
+  const slugValue = name ? formatSlug(name) : undefined;
+
   const updatedProduct = await prisma.product.update({
     where: {
-      id,
+      slug,
     },
     data: {
+      slug: slugValue,
       name,
       price,
       image,
