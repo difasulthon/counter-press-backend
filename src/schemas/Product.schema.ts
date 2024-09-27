@@ -10,6 +10,8 @@ export const queryProductSchema = z.object({
   brandId: z.string().optional(),
   sort: z.enum([DESC, ASC]).optional(),
   sortBy: z.enum([ID, NAME, BRAND_ID, CREATED_AT, UPDATED_AT]).optional(),
+  page: z.string().optional(),
+  size: z.string().optional(),
 });
 
 export const paramProductByIdSchema = z.object({

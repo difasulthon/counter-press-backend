@@ -13,11 +13,13 @@ const prisma = new PrismaClient();
 const { ID } = SORT_BY;
 
 export async function getProducts(query: z.infer<typeof queryProductSchema>) {
-  const { name, brandId, sort, sortBy } = query;
+  const { name, brandId, sort, sortBy, page, size } = query;
 
   const sortByKey = sortBy || ID;
   const sortMethod = sort || SORT.ASC;
   const orderBy = { [sortByKey]: sortMethod };
+  const take = size && +size > 0 ? +size : 10;
+  const skip = page && size ? (+page - 1) * +take : 1;
 
   const products = await prisma.product.findMany({
     where: {
@@ -28,19 +30,19 @@ export async function getProducts(query: z.infer<typeof queryProductSchema>) {
       brandId,
     },
     orderBy,
+    take,
+    skip,
   });
 
   return products;
 }
 
 export async function getProductBySlug(slug: string) {
-  console.log("slug", slug);
   const product = await prisma.product.findFirst({
     where: {
       slug,
     },
   });
-  console.log("product", product);
 
   return product;
 }
