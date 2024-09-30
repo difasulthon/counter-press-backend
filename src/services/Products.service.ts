@@ -1,5 +1,6 @@
 import { PrismaClient, Product } from "@prisma/client";
 import { z } from "zod";
+import { get } from "lodash";
 
 import { SORT, SORT_BY } from "../constants";
 import {
@@ -65,12 +66,16 @@ export async function getProductBySlug(slug: string) {
 }
 
 export async function addProduct(
-  data: Pick<
-    Product,
-    "name" | "price" | "image" | "brandId" | "stock" | "brandName"
-  >
+  data: Pick<Product, "name" | "price" | "image" | "brandId" | "stock">
 ) {
-  const { name, price, brandId, image, stock, brandName } = data;
+  const { name, price, brandId, image, stock } = data;
+
+  const brandItem = await prisma.brand.findUnique({
+    where: {
+      id: brandId,
+    },
+  });
+  const brandName = get(brandItem, "name", "");
 
   const newProduct = await prisma.product.create({
     data: {

@@ -128,14 +128,13 @@ product.openapi(
   async (c) => {
     let body = c.req.valid("json");
 
-    const { name, price, image, brandId, stock, brandName } = body;
+    const { name, price, image, brandId, stock } = body;
     const newProduct = await addProduct({
       name,
       price,
       image,
       brandId,
       stock,
-      brandName,
     });
 
     return c.json(

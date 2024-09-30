@@ -28,7 +28,6 @@ export const bodyAddProductSchema = z.object({
   price: z.number().min(1),
   image: z.string().min(4),
   stock: z.number().min(1),
-  brandName: z.string().min(1),
 });
 
 export const bodyUpdateProductSchema = z.object({
