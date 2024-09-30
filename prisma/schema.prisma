@@ -38,8 +38,8 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  brandId   String?
-  brandName String?
+  brandId   String
+  brandName String
   brand     Brand?   @relation(fields: [brandId], references: [id])
 
   @@map("products")
