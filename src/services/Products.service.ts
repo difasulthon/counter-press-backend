@@ -1,6 +1,6 @@
 import { PrismaClient, Product } from "@prisma/client";
 import { z } from "zod";
-import { get } from "lodash";
+import { capitalize, get } from "lodash";
 
 import { SORT, SORT_BY } from "../constants";
 import {
@@ -14,7 +14,7 @@ const prisma = new PrismaClient();
 const { ID } = SORT_BY;
 
 export async function getProducts(query: z.infer<typeof queryProductSchema>) {
-  const { name, brandId, sort, sortBy, page, size } = query;
+  const { name, brandId, brandName, sort, sortBy, page, size } = query;
 
   const sortByKey = sortBy || ID;
   const sortMethod = sort || SORT.ASC;
@@ -31,6 +31,7 @@ export async function getProducts(query: z.infer<typeof queryProductSchema>) {
         mode: "insensitive",
       },
       brandId,
+      brandName: capitalize(brandName),
     },
     orderBy,
     take,

@@ -8,6 +8,7 @@ const { ID, NAME, BRAND_ID, CREATED_AT, UPDATED_AT } = SORT_BY;
 export const queryProductSchema = z.object({
   name: z.string().optional(),
   brandId: z.string().optional(),
+  brandName: z.string().optional(),
   sort: z.enum([DESC, ASC]).optional(),
   sortBy: z.enum([ID, NAME, BRAND_ID, CREATED_AT, UPDATED_AT]).optional(),
   page: z.string().optional(),
