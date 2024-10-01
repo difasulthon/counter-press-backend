@@ -23,6 +23,7 @@ export async function getProducts(query: z.infer<typeof queryProductSchema>) {
   const sizeInput = size ? +size : 10;
   const take = sizeInput;
   const skip = (pageInput - 1) * take;
+  const brandValue = brandName ? capitalize(brandName) : undefined;
 
   const products = await prisma.product.findMany({
     where: {
@@ -31,7 +32,7 @@ export async function getProducts(query: z.infer<typeof queryProductSchema>) {
         mode: "insensitive",
       },
       brandId,
-      brandName: capitalize(brandName),
+      brandName: brandValue,
     },
     orderBy,
     take,
