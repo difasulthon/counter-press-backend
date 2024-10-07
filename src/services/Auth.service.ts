@@ -50,3 +50,24 @@ export async function getValidUser(params: { userName: string }) {
 
   return user;
 }
+
+export async function getUser(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      fullName: true,
+      userName: true,
+      email: true,
+      address: true,
+      city: true,
+      phoneNumber: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
+}

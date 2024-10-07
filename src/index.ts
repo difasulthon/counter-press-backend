@@ -11,6 +11,10 @@ import { user } from "./routes/User.route";
 const api = new OpenAPIHono({ strict: false });
 
 api.use("/*", cors());
+api.openAPIRegistry.registerComponent("securitySchemes", "InputToken", {
+  type: "http",
+  scheme: "bearer",
+});
 api.route(ROUTES.BASE, auth);
 api.route(ROUTES.BASE, product);
 api.route(ROUTES.BASE, brand);

@@ -2,11 +2,12 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { setCookie } from "hono/cookie";
 
 import { TAGS } from "../constants";
+import { checkUserToken } from "../middlewares/CheckUser.middleware";
 import {
   bodyLoginSchema,
   bodyRegisterNewUserSchema,
 } from "../schemas/Auth.schema";
-import { getValidUser, registerUser } from "../services/Auth.service";
+import { getUser, getValidUser, registerUser } from "../services/Auth.service";
 import { verifyPassword } from "../utils/Password.util";
 import { createToken } from "../utils/Token.util";
 
@@ -133,6 +134,47 @@ auth.openapi(
       },
       201
     );
+  }
+);
+
+/**
+ * GET check authentication
+ */
+auth.openapi(
+  {
+    method: "get",
+    path: "/auth/me",
+    description: "Get Authenticated User",
+    middleware: [checkUserToken()],
+    responses: {
+      200: {
+        description: "Authenticated",
+      },
+    },
+    tags: TAGS.AUTH,
+  },
+  async (c) => {
+    try {
+      const user: { id: string } = c.get("user" as never);
+      const result = await getUser(user.id);
+
+      return c.json(
+        {
+          status: true,
+          message: "Successfully get authenticated user",
+          data: result,
+        },
+        200
+      );
+    } catch (e) {
+      return c.json(
+        {
+          status: false,
+          message: e,
+        },
+        404
+      );
+    }
   }
 );
 
