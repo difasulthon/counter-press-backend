@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { queryBrandSchema } from "../schemas/Brand.schema";
 import { SORT, SORT_BY } from "../constants";
-import { formatSlug } from "../utils/formatter";
+import { formatSlug } from "../utils/Formatter.util";
 
 const prisma = new PrismaClient();
 

@@ -7,7 +7,7 @@ import {
   bodyUpdateProductSchema,
   queryProductSchema,
 } from "../schemas/Product.schema";
-import { formatSlug } from "../utils/formatter";
+import { formatSlug } from "../utils/Formatter.util";
 
 const prisma = new PrismaClient();
 
