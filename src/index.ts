@@ -11,9 +11,9 @@ import { user } from "./routes/User.route";
 const api = new OpenAPIHono({ strict: false });
 
 api.use("/*", cors());
+api.route(ROUTES.BASE, auth);
 api.route(ROUTES.BASE, product);
 api.route(ROUTES.BASE, brand);
-api.route(ROUTES.BASE, auth);
 api.route(ROUTES.BASE, user);
 api.notFound((c) => c.json({ message: MESSAGE.ERROR.NOT_FOUND }, 404));
 
