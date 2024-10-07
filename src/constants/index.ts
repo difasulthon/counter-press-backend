@@ -49,6 +49,8 @@ const SORT_BY = {
 const TAGS = {
   PRODUCTS: ["Products"],
   BRANDS: ["Brands"],
+  USERS: ["Users"],
+  AUTH: ["Auth"],
 };
 
 const DOC = {
