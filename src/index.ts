@@ -7,15 +7,17 @@ import { product } from "./routes/Product.route";
 import { brand } from "./routes/Brands.route";
 import { auth } from "./routes/Auth.route";
 import { user } from "./routes/User.route";
+import { cart } from "./routes/Cart.route";
 
 const api = new OpenAPIHono({ strict: false });
 
 api.use("/*", cors());
-api.openAPIRegistry.registerComponent("securitySchemes", "InputToken", {
+api.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
   type: "http",
   scheme: "bearer",
 });
 api.route(ROUTES.BASE, auth);
+api.route(ROUTES.BASE, cart);
 api.route(ROUTES.BASE, product);
 api.route(ROUTES.BASE, brand);
 api.route(ROUTES.BASE, user);

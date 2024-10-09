@@ -145,6 +145,7 @@ auth.openapi(
     method: "get",
     path: "/auth/me",
     description: "Get Authenticated User",
+    security: [{ Bearer: [] }],
     middleware: [checkUserToken()],
     responses: {
       200: {

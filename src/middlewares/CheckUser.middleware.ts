@@ -16,8 +16,6 @@ type Env = {
 
 export const checkUserToken = () =>
   createMiddleware<Env>(async (c, next) => {
-    const tokenCookie = getCookie(c, "token");
-
     const authHeader = c.req.header("Authorization");
     if (!authHeader) {
       return c.json(
@@ -28,6 +26,8 @@ export const checkUserToken = () =>
         401
       );
     }
+
+    const tokenCookie = getCookie(c, "token");
 
     const token = tokenCookie
       ? tokenCookie
@@ -69,7 +69,14 @@ export const checkUserToken = () =>
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true },
+      select: {
+        id: true,
+        fullName: true,
+        userName: true,
+        address: true,
+        city: true,
+        phoneNumber: true,
+      },
     });
 
     if (!user) {

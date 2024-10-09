@@ -51,6 +51,7 @@ const TAGS = {
   BRANDS: ["Brands"],
   USERS: ["Users"],
   AUTH: ["Auth"],
+  CARTS: ["CARTS"],
 };
 
 const DOC = {
