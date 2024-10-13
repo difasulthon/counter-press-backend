@@ -25,7 +25,6 @@ Auth:
 | `/auth/register`   | `POST`   | Public        |
 | `/auth/login`      | `POST`   | Public        |
 | `/auth/me`         | `GET`    | Authenticated |
-| `/auth/logout`     | `POST`   | Authenticated |
 | `/cart`            | `GET`    | Authenticated |
 | `/cart/items`      | `POST`   | Authenticated |
 | `/cart/items/:id`  | `DELETE` | Authenticated |
